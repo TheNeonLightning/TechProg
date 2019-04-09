@@ -1,0 +1,17 @@
+#!/bin/bash
+mkdir working_dir
+cd working_dir # проект открываем/запускаем в отдельной директории
+sudo apt update
+sudo apt-get install libboost-all-dev # нужно для второй части
+sudo apt-get install libssl-dev # нужно для второй части
+sudo apt-get install curl # нужно для второй части
+sudo apt-get install libcurl4-openssl-dev # нужно для второй части
+git clone https://github.com/akhtyamovpavel/PatternsCollection # скачиваем репозиторий с паттернами
+git clone https://github.com/raspberrypi/tools # скачиваем tools для сборки под Raspberry Pi
+export PATH=$PATH:$(pwd)/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin # добавляем хранящимся путям, путь к используемым компиляторам
+mkdir local # создаём поддиректорию для того, чтобы запускать из неё cmake
+cd local
+cmake ../PatternsCollection -DSYSROOT=$(pwd)/../tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/arm-linux-gnueabihf/sysroot -DON_PI=ON # запуск cmake с указанными переменными SYSROOT (находится в скачанных tools) и ON_PI = ON
+make
+zip -r ../assembly_dirs.zip ../lib-arm ../bin-arm # архивируем полученные фаилы сборки
+zip -r ../project_dirs.zip ../local # доп. архивирование фаилов работы cmake
